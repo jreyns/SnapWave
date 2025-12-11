@@ -102,9 +102,6 @@ contains
       !
       implicit none
       !
-      !
-      real*4, dimension(:), allocatable :: zsg
-      !
       allocate (buf(no_nodes))
       allocate (buf2(no_nodes, ntheta))
       !
@@ -345,7 +342,7 @@ contains
          NF90(nf90_put_att(map_file%ncid, map_file%ee_varid, 'long_name', 'Wave energy density'))
       end if
       !
-      if (map_ee .or. map_ctheta == 1) then
+      if (map_ee == 1 .or. map_ctheta == 1) then
          NF90(nf90_def_var(map_file%ncid, 'theta', NF90_FLOAT, (/map_file%ntheta_dimid, map_file%time_dimid/), map_file%theta_varid)) ! theta grid
          NF90(nf90_put_att(map_file%ncid, map_file%theta_varid, 'long_name', 'Wave directional grid '))
          NF90(nf90_put_att(map_file%ncid, map_file%theta_varid, 'start_index', 1))
@@ -430,8 +427,6 @@ contains
       ! Write epsg, msk & bed level already to file
       !
 !   NF90(nf90_put_var(map_file%ncid, map_file%crs_varid, epsg))
-      !
-      zsg = 0 ! initialise as inactive points
       !
       NF90(nf90_put_var(map_file%ncid, map_file%fw_varid, fw, (/1/)))
       NF90(nf90_put_var(map_file%ncid, map_file%fw_ig_varid, fw_ig, (/1/)))

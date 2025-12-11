@@ -344,7 +344,7 @@ subroutine initialize_snapwave_domain()
    windspreadfac = 0.0
    dist = 0.0
    !
-   if (upwfile=='') then   
+   if (upwfile=='') then
       !
       write(*,*)'   Getting surrounding points ...'
       !
@@ -391,7 +391,7 @@ subroutine initialize_snapwave_domain()
                 msk(neumannconnected(k)) = 3
               else
                 ! we don't allow neumannconnected links if the node is an open boundary
-                neumannconnected(k) = 0  
+                neumannconnected(k) = 0
               endif
            endif
          enddo
@@ -450,7 +450,7 @@ subroutine initialize_snapwave_domain()
          write(145)dhdy
          close(145)
       endif
-      !
+      
    else
       !
       write(*,*)'   Reading upwind neighbors file ...'
@@ -1126,7 +1126,6 @@ subroutine neuboundaries(x,y,no_nodes,xneu,yneu,n_neu,tol,neumannconnected)
                   enddo
                   if (kmin>0) then
                      neumannconnected(kmin)=k
-                     write(*,*)kmin,k
                   endif
                endif
             endif
@@ -1150,7 +1149,7 @@ subroutine read_neumann_boundary()
    !
    ! Read polylines
    if (neumannfile(1:4) /= 'none') then    ! Normal ascii input files
-      write(*,*)neumannfile(1:4)
+      !write(*,*)neumannfile(1:4)
 
       write(*,*)'   Reading neumann boundary locations ...'
       !
@@ -1169,7 +1168,7 @@ subroutine read_neumann_boundary()
          do n = 1, n_neu
             read(500,*)x_neu(n),y_neu(n)
          enddo
-         close(500) 
+         close(500)
       endif
    else
       n_neu=0 ! There is no neumann boundary specified

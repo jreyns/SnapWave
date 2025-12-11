@@ -1,8 +1,8 @@
 # =============================================================================
 # COMPILER CONFIGURATION AND FLAGS
 # =============================================================================
-FC = ifort
-CC = icx # Or gcc, if you prefer
+FC = gfortran # or ifort, it you want
+CC = gcc # Or icx, if you prefer
 NF_CONFIG = nf-config
 
 # Output directories
@@ -16,18 +16,27 @@ NC_FLIBS  := $(shell $(NF_CONFIG) --flibs  2>/dev/null || echo "-lnetcdff -lnetc
 
 # Compilation Flags
 # Detect if ifort or gfortran is used for the module flag
-ifeq ($(findstring ifort,$(FC)),ifort)
-  OMPFLAG := -qopenmp
-  MODFLAG := -module $(BUILD_DIR)
-  # -DTRILIBRARY is necessary for triangle to compile as a library and not look for main()
-  CFLAGS  := -O2 -DTRILIBRARY
+ifeq ($(DEBUG),1)
+	OMPFLAG := -fopenmp
+	MODFLAG := -J$(BUILD_DIR)
+    FFLAGS += -g -O0 -fcheck=all -fbacktrace $(OMPFLAG) $(MODFLAG) -I$(BUILD_DIR) $(NC_FFLAGS) -ffree-line-length-none
+    CFLAGS += -g -O0 -DTRILIBRARY
 else
-  OMPFLAG := -fopenmp
-  MODFLAG := -J$(BUILD_DIR)
-  CFLAGS  := -O2 -DTRILIBRARY
+	ifeq ($(findstring ifort,$(FC)),ifort)
+	  OMPFLAG := -qopenmp
+	  MODFLAG := -module $(BUILD_DIR)
+	  # -DTRILIBRARY is necessary for triangle to compile as a library and not look for main()
+	  CFLAGS  := -O2 -DTRILIBRARY
+	  FFLAGS := -O2 $(OMPFLAG) $(MODFLAG) -I$(BUILD_DIR) $(NC_FFLAGS)
+	else
+	  OMPFLAG := -fopenmp
+	  MODFLAG := -J$(BUILD_DIR)
+	  CFLAGS  := -O2 -DTRILIBRARY
+	  FFLAGS := -O2 $(OMPFLAG) $(MODFLAG) -I$(BUILD_DIR) $(NC_FFLAGS) -ffree-line-length-none
+	endif
 endif
 
-FFLAGS := -O2 $(OMPFLAG) $(MODFLAG) -I$(BUILD_DIR) $(NC_FFLAGS)
+
 
 # =============================================================================
 # SOURCE AND OBJECT DEFINITIONS
