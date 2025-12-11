@@ -330,7 +330,7 @@ contains
       !
       ! Update wind forcing
       !
-      if (wind) then
+      if (wind == 1) then
          call update_wind_field(t)
       end if
       !
